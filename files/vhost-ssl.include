@@ -1,0 +1,13 @@
+# This file is user-editable using "sudoedit FILENAME".
+
+#ServerAdmin user@berkeley.edu
+DocumentRoot /var/www/html
+
+<Files ~ "\.(cgi|shtml|phtml|php3?)$">
+    SSLOptions +StdEnvVars
+</Files>
+<Directory "/var/www/cgi-bin">
+    SSLOptions +StdEnvVars
+</Directory>
+
+#ProxyPass /sample/ ajp://localhost:8009/sample/

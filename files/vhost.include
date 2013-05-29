@@ -1,0 +1,6 @@
+# This file is user-editable using "sudoedit FILENAME".
+
+#ServerAdmin user@berkeley.edu
+DocumentRoot /var/www/html
+
+#ProxyPass /sample/ ajp://localhost:8009/sample/

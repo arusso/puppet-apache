@@ -1,0 +1,71 @@
+# The default vhost is defined in vhost-000-default.conf.  User customizable
+# values are in the .include and .ssl.include files, located in this directory
+
+# HTTP VirtualHost
+<VirtualHost *:80>
+    ServerName <%= @server_name %>
+<%# Let's add some server aliases -%>
+<% if @server_alias_real.kind_of? Array and @server_alias_real.count > 0 -%>
+<% @server_alias_real.each do |aliasname| -%>
+    ServerAlias <%= aliasname %>
+<% end -%>
+<% end -%>
+<% if @docroot.kind_of? String and @docroot != '' -%>
+    DocumentRoot <%= @docroot %>
+<% end -%>
+
+    Include conf.d/vhost-<%= @priority %>-<%= @server_name %>.include
+
+    ErrorLog  logs/<%= @server_name %>_80-error_log
+    CustomLog logs/<%= @server_name %>_80-access_log common
+    CustomLog logs/<%= @server_name %>_80-combined_log combined
+</VirtualHost>
+
+<% if @ssl_real -%>
+# HTTPS VirtualHost
+<VirtualHost *:443>
+  # General setup for the virtual host is inherited from global configuration
+  ServerName <%= @server_name %>
+<%# Let's add some server aliases -%>
+<% if @server_alias_real.kind_of? Array and @server_alias_real.count > 0 -%>
+<% @server_alias_real.each do |aliasname| -%>
+  ServerAlias <%= aliasname %>
+<% end -%>
+<% end -%>
+
+  Include conf.d/vhost-<%= @priority %>-<%= @server_name %>.ssl.include
+
+  # Use separate log files for the SSL virtual host; note that LogLevel
+  # is not inherited from httpd.conf.
+  ErrorLog  logs/<%= @server_name %>_443-error_log
+  CustomLog logs/<%= @server_name %>_443-access_log common
+  CustomLog logs/<%= @server_name %>_443-combined_log combined
+  
+  #   Per-Server Logging:
+  #   The home of a custom SSL log file. Use this when you want a
+  #   compact non-error SSL logfile on a virtual host basis.
+  CustomLog logs/<%= @server_name %>_443-ssl_request_log \
+          "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+
+  LogLevel warn
+
+  SSLEngine on
+  SSLProtocol all -SSLv2
+  SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
+  SSLCertificateFile <%= @ssl_crt_dir_real %>/<%= @ssl_crt_file %>
+  SSLCertificateKeyFile <%= @ssl_key_dir_real %>/<%=@ssl_key_file %>
+  <%- if @ssl_int_file  and @ssl_int_file != '' -%>
+  SSLCertificateChainFile <%= @ssl_crt_dir_real %>/<%=@ssl_int_file %>
+  <%- end -%>
+
+  # Notice: Most problems of broken clients are also related to the HTTP
+  # keep-alive facility, so you usually additionally want to disable
+  # keep-alive for those clients, too. Use variable "nokeepalive" for this.
+  # Similarly, one has to force some clients to use HTTP/1.0 to workaround
+  # their broken HTTP/1.1 implementation. Use variables "downgrade-1.0" and
+  # "force-response-1.0" for this.
+  SetEnvIf User-Agent ".*MSIE.*" \
+         nokeepalive ssl-unclean-shutdown \
+         downgrade-1.0 force-response-1.0
+</VirtualHost>
+<% end -%>
