@@ -36,4 +36,4 @@ Support
 -------
 
 Please log tickets and issues at the
-[Projects site](https://github.com/arusso23/puppet-apache/issues/)
+[Projects site](https://github.com/arusso/puppet-apache/issues/)
