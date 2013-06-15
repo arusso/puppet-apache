@@ -3,6 +3,8 @@
 # Installs and enables the mod_ssl module
 #
 class apache::mod::ssl {
+  include apache::params
+
   package { 'mod_ssl': ensure => 'installed' }
 
   file { "${apache::params::conf_d_dir}/ssl.conf":
