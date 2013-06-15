@@ -86,6 +86,8 @@ define apache::vhost (
   $ssl_crt_file = params_lookup( 'ssl_crt_file', false ),
   $ssl_int_file = params_lookup( 'ssl_int_file', false )
 ) {
+  include apache::namevirtualhost
+
   if $document_root { validate_absolute_path( $document_root ) }
 
   # Let's add our server_name to the server_alias array
