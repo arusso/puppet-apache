@@ -26,7 +26,7 @@
 #     start = '<true|false|noop>'
 #
 # [*version*]
-#   Version of the package to install, in most cases, this should be should be 
+#   Version of the package to install, in most cases, this should be should be
 #   'present'
 #
 #  Usage:

@@ -11,13 +11,15 @@
 #  Usage:
 #    document_root = '/path/to/doc/root'
 #
-# [*priority*]
-#   Affects the order in which the vhost is loaded.  00 being the lowest
-#   priority, 99 being the highest.  Priority must contain leading 0.  Default
-#   is 50
+# [*is_default*]
+#   Distinguishes the vhost as the default one, naming the configuration file
+#   appropriately such that it will come before non-default vhosts. Multiple
+#   vhosts with is_default set will resort to sorting by $server_name.
 #
 #  Usage:
-#    priority = '23'
+#    is_default = true
+#  or
+#    is_default = false
 #
 # [*server_alias*]
 #   Comma seperated or array value of the hostnames that this this virtual host
@@ -32,7 +34,7 @@
 #   String indicating the primary hostname for this vhost.
 #
 #  Usage:
-#    server_naem = 'host.example.com'
+#    server_name = 'host.example.com'
 #
 # [*ssl*]
 #   Boolean indicating whether we should enable SSL for this vhost
@@ -75,10 +77,10 @@
 #   ssl_key_file => '/etc/pki/tls/private/app-prod.example.com.key',
 #   ssl_crt_file => '/etc/pki/tls/certs/app-prod.example.com.crt',
 #   ssl_int_file => '/etc/pki/tls/certs/intermediate.crt,
-# }  
+# }
 define apache::vhost (
+  $is_default = false,
   $document_root = params_lookup( 'document_root', false ),
-  $priority = params_lookup( 'priority', false, '50' ),
   $server_alias = params_lookup( 'server_alias', false, '' ),
   $server_name = params_lookup( 'server_name', false, $name),
   $ssl = params_lookup( 'ssl', false ),
@@ -103,7 +105,8 @@ define apache::vhost (
     boolean => $ssl,
   }
   validate_bool( $ssl_real )
-  
+
+  $ord = $is_default ? { true => '0', default => '1' }
   if $ssl_real {
     # include our class to setup the ssl module for apache
     include apache::mod::ssl
@@ -111,17 +114,17 @@ define apache::vhost (
     # establish the relationship between our SSL cert and our
     # config file, ensuring it exists before we try to use it
     Ssl::Cert[$name]->
-      File["${apache::params::vhost_dir}/vhost-${priority}-${name}.conf"]
+      File["${apache::params::vhost_dir}/vhost-${ord}-${server_name}.conf"]
 
-    validate_absolute_path( "${ssl_key_file}" )
-    validate_absolute_path( "${ssl_crt_file}" )
+    validate_absolute_path( $ssl_key_file )
+    validate_absolute_path( $ssl_crt_file )
     # if we haven't downloaded the signed cert (or its self signed), we want to
     # be able to disable the intermediate file.  So if it's empty, lets not
     # worry about if thats the case
-    if ! $ssl_int_file == undef { validate_absolute_path( "${ssl_int_file}" ) }
+    if ! $ssl_int_file == undef { validate_absolute_path( $ssl_int_file ) }
 
     # Our user-editable config file
-    file { "${apache::params::vhost_dir}/vhost-${priority}-${name}.ssl.include":
+    file { "${apache::params::vhost_dir}/vhost-${server_name}.ssl.include":
       ensure  => 'file',
       owner   => 'root',
       group   => 'root',
@@ -132,7 +135,7 @@ define apache::vhost (
   } # if ssl_real
 
   # Our primary config file, not user editable
-  file { "${apache::params::vhost_dir}/vhost-${priority}-${name}.conf":
+  file { "${apache::params::vhost_dir}/vhost-${ord}-${server_name}.conf":
     ensure  => 'file',
     owner   => 'root',
     group   => 'root',
@@ -141,7 +144,7 @@ define apache::vhost (
   }
 
   # Our user-editable config file
-  file { "${apache::params::vhost_dir}/vhost-${priority}-${name}.include":
+  file { "${apache::params::vhost_dir}/vhost-${server_name}.include":
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
