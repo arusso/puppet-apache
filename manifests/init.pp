@@ -25,18 +25,10 @@
 #  Usage:
 #     start = '<true|false|noop>'
 #
-# [*version*]
-#   Version of the package to install, in most cases, this should be should be
-#   'present'
-#
-#  Usage:
-#    version = '<present|package_version>'
-#
 class apache(
   $enable = params_lookup( 'enable', false),
   $server_admin = params_lookup( 'server_admin', false ),
   $start = params_lookup( 'start', false ),
-  $version = params_lookup( 'version', false )
 ) inherits apache::params {
   class { 'apache::install': } ->
   class { 'apache::config': } ~>

@@ -4,7 +4,6 @@
 # containing a large portion of the OS logic required for this module
 #
 class apache::params {
-  $version = 'present'
   $start = true
   $enable = true
   $server_admin = "root@localhost"
