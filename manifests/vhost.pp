@@ -11,6 +11,16 @@
 #  Usage:
 #    document_root = '/path/to/doc/root'
 #
+# [*is_default*]
+#   Distinguishes the vhost as the default one, naming the configuration file
+#   appropriately such that it will come before non-default vhosts. Multiple
+#   vhosts with is_default set will resort to sorting by $server_name.
+#
+#  Usage:
+#    is_default = true
+#  or
+#    is_default = false
+#
 # [*server_alias*]
 #   Comma seperated or array value of the hostnames that this this virtual host
 #   respond to.
