@@ -6,5 +6,5 @@
 # apache class
 #
 class apache::install {
-  package { $apache::package_name: ensure => $apache::version }
+  package { $apache::package_name: ensure => 'present' }
 }
