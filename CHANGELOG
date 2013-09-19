@@ -1,3 +1,9 @@
+2013-09-19 Aaron Russo <arusso@berkeley.edu> - 0.0.3
+* Issue#1: adding NameVirtualHost lines
+* Issue#2: replaced priority parameter with is_default
+* Issue#3: removed version parameter from apache class
+* Issue#4: removed params_lookup function for default param values
+
 2013-06-02 Aaron Russo <arusso@berkeley.edu> - 0.0.2
 * updating docs for acct rename
 
