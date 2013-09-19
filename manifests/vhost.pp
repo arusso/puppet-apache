@@ -79,14 +79,14 @@
 #   ssl_int_file => '/etc/pki/tls/certs/intermediate.crt,
 # }
 define apache::vhost (
-  $is_default = false,
-  $document_root = params_lookup( 'document_root', false ),
-  $server_alias = params_lookup( 'server_alias', false, '' ),
-  $server_name = params_lookup( 'server_name', false, $name),
-  $ssl = params_lookup( 'ssl', false ),
-  $ssl_key_file = params_lookup( 'ssl_key_file', false ),
-  $ssl_crt_file = params_lookup( 'ssl_crt_file', false ),
-  $ssl_int_file = params_lookup( 'ssl_int_file', false )
+  $is_default = $apache::params::is_default,
+  $document_root = $apache::params::document_root,
+  $server_alias = undef,
+  $server_name = $name,
+  $ssl = $apache::params::ssl,
+  $ssl_key_file = undef,
+  $ssl_crt_file = undef,
+  $ssl_int_file = undef,
 ) {
   include apache::namevirtualhost
 
