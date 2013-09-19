@@ -26,9 +26,9 @@
 #     start = '<true|false|noop>'
 #
 class apache(
-  $enable = params_lookup( 'enable', false),
-  $server_admin = params_lookup( 'server_admin', false ),
-  $start = params_lookup( 'start', false ),
+  $enable = $apache::params::enable,
+  $server_admin = $apache::params::server_admin,
+  $start = $apache::params::start,
 ) inherits apache::params {
   class { 'apache::install': } ->
   class { 'apache::config': } ~>
