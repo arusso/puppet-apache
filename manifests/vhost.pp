@@ -48,17 +48,21 @@
 #  or
 #    ssl = 'true'
 #
-# [*ssl_key_file*]
-#   String location of the SSL key file
-#
-#  Usage:
-#    ssl_key_file = '/etc/pki/tls/private/host.example.com.key'
-#
 # [*ssl_crt_file*]
 #   String location of the SSL certificate file
 #
 #  Usage:
 #    ssl_crt_file = '/etc/pki/tls/certs/host.example.com.crt'
+#
+# [*ssl_cert_resource*]
+#   Name of SSL::Cert object to depend on.  Defaults to $namevar.  If set to
+#   'noset', no dependency is created.
+#
+# [*ssl_key_file*]
+#   String location of the SSL key file
+#
+#  Usage:
+#    ssl_key_file = '/etc/pki/tls/private/host.example.com.key'
 #
 # [*ssl_int_file*]
 #   String location of the SSL intermediate certificate chain.  If this is not
@@ -76,11 +80,12 @@
 # }
 #
 # apache::vhost { 'app.example.com':
-#   server_alias  => [ 'app-prod.example.com' ],
-#   ssl          => true,
-#   ssl_key_file => '/etc/pki/tls/private/app-prod.example.com.key',
-#   ssl_crt_file => '/etc/pki/tls/certs/app-prod.example.com.crt',
-#   ssl_int_file => '/etc/pki/tls/certs/intermediate.crt,
+#   server_alias     => [ 'app-prod.example.com' ],
+#   ssl              => true,
+#   ssl_key_file     => '/etc/pki/tls/private/app-prod.example.com.key',
+#   ssl_crt_file     => '/etc/pki/tls/certs/app-prod.example.com.crt',
+#   ssl_int_file     => '/etc/pki/tls/certs/intermediate.crt,
+#   ssl_crt_resource => 'noset',
 # }
 define apache::vhost (
   $is_default = $apache::params::is_default,
@@ -88,9 +93,10 @@ define apache::vhost (
   $provide_include = $apache::params::provide_include,
   $server_alias = undef,
   $server_name = $name,
-  $ssl = $apache::params::ssl,
-  $ssl_key_file = undef,
+  $ssl = $name,
+  $ssl_cert_resource = $apache::params::ssl_cert_resource,
   $ssl_crt_file = undef,
+  $ssl_key_file = undef,
   $ssl_int_file = undef,
 ) {
   include apache::namevirtualhost
@@ -101,8 +107,8 @@ define apache::vhost (
 
   # Let's add our server_name to the server_alias array
   $server_alias_real = is_array( $server_alias) ? {
-      true => unique(flatten([ $server_name, $server_alias])),
-      default => unique(flatten([ $server_name, split( $server_alias, ',' )])),
+    true => unique(flatten([ $server_name, $server_alias])),
+    default => unique(flatten([ $server_name, split( $server_alias, ',' )])),
   }
   validate_array( $server_alias_real )
 
@@ -118,10 +124,16 @@ define apache::vhost (
     # include our class to setup the ssl module for apache
     include apache::mod::ssl
 
-    # establish the relationship between our SSL cert and our
-    # config file, ensuring it exists before we try to use it
-    Ssl::Cert[$name]->
+    $ssl_cert_resource_r = $ssl_cert_resource ? {
+      $apache::params::ssl_cert_resource => $name, # default is to use $name
+      /(?i)^noset$/                      => undef, # dont set a dependency
+      default                            => $ssl_cert_resource, # user input
+    }
+    if $ssl_cert_resource_r {
+      validate_string( $ssl_cert_resource_r )
+      Ssl::Cert[$ssl_cert_resource_r]->
       File["${apache::params::vhost_dir}/vhost-${ord}-${server_name}.conf"]
+    }
 
     validate_absolute_path( $ssl_key_file )
     validate_absolute_path( $ssl_crt_file )
@@ -139,7 +151,7 @@ define apache::vhost (
         mode    => '0644',
         source  => 'puppet:///modules/apache/vhost.include',
         replace => false,
-      } # vhost.ssl.include
+        } # vhost.ssl.include
     }
   } # if ssl_real
 
