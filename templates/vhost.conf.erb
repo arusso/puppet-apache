@@ -14,7 +14,9 @@
     DocumentRoot <%= @docroot %>
 <% end -%>
 
+<% if @provide_include -%>
     Include conf.d/vhost-<%= @server_name %>.include
+<% end -%>
 
     ErrorLog  logs/<%= @server_name %>_80-error_log
     CustomLog logs/<%= @server_name %>_80-access_log common
@@ -32,8 +34,10 @@
   ServerAlias <%= aliasname %>
 <% end -%>
 <% end -%>
-
+ 
+<% if @provide_include -%>
   Include conf.d/vhost-<%= @server_name %>.ssl.include
+<% end -%>
 
   # Use separate log files for the SSL virtual host; note that LogLevel
   # is not inherited from httpd.conf.

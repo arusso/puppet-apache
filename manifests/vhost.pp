@@ -21,6 +21,10 @@
 #  or
 #    is_default = false
 #
+# [*provide_include*]
+#   Provide .include files that can be used in conjunction with sudoer rules
+#   that we wont override (only place if they dont exist). Default is true.
+#
 # [*server_alias*]
 #   Comma seperated or array value of the hostnames that this this virtual host
 #   respond to.
@@ -81,6 +85,7 @@
 define apache::vhost (
   $is_default = $apache::params::is_default,
   $document_root = $apache::params::document_root,
+  $provide_include = $apache::params::provide_include,
   $server_alias = undef,
   $server_name = $name,
   $ssl = $apache::params::ssl,
@@ -89,6 +94,8 @@ define apache::vhost (
   $ssl_int_file = undef,
 ) {
   include apache::namevirtualhost
+
+  validate_bool( $provide_include )
 
   if $document_root { validate_absolute_path( $document_root ) }
 
@@ -124,14 +131,16 @@ define apache::vhost (
     if ! $ssl_int_file == undef { validate_absolute_path( $ssl_int_file ) }
 
     # Our user-editable config file
-    file { "${apache::params::vhost_dir}/vhost-${server_name}.ssl.include":
-      ensure  => 'file',
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0644',
-      source  => 'puppet:///modules/apache/vhost.include',
-      replace => false,
-    } # vhost.ssl.include
+    if $provide_include {
+      file { "${apache::params::vhost_dir}/vhost-${server_name}.ssl.include":
+        ensure  => 'file',
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0644',
+        source  => 'puppet:///modules/apache/vhost.include',
+        replace => false,
+      } # vhost.ssl.include
+    }
   } # if ssl_real
 
   # Our primary config file, not user editable
@@ -144,11 +153,13 @@ define apache::vhost (
   }
 
   # Our user-editable config file
-  file { "${apache::params::vhost_dir}/vhost-${server_name}.include":
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    source  => 'puppet:///modules/apache/vhost.include',
-    replace => false,
+  if $provide_include {
+    file { "${apache::params::vhost_dir}/vhost-${server_name}.include":
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      source  => 'puppet:///modules/apache/vhost.include',
+      replace => false,
+    }
   }
 }
