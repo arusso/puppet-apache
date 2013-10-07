@@ -10,6 +10,7 @@ class apache::params {
   $server_admin = 'root@localhost'
   $document_root = '/var/www/html'
   $ssl = false
+  $ssl_cert_resource = 'UNSET'
   $provide_include = true
 
   # DISTRO/VERSION DEPENDANT PARAMETER LOGIC

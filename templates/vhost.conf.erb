@@ -62,10 +62,10 @@
   SSLEngine on
   SSLProtocol all -SSLv2
   SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
-  SSLCertificateFile <%= @ssl_crt_dir_real %>/<%= @ssl_crt_file %>
-  SSLCertificateKeyFile <%= @ssl_key_dir_real %>/<%=@ssl_key_file %>
+  SSLCertificateFile <%= @ssl_crt_file %>
+  SSLCertificateKeyFile <%=@ssl_key_file %>
   <%- if @ssl_int_file  and @ssl_int_file != '' -%>
-  SSLCertificateChainFile <%= @ssl_crt_dir_real %>/<%=@ssl_int_file %>
+  SSLCertificateChainFile <%=@ssl_int_file %>
   <%- end -%>
 
   # Notice: Most problems of broken clients are also related to the HTTP
