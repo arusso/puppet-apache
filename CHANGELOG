@@ -1,4 +1,7 @@
-2013-10-3 Aaron Russo <arusso@berkeley.edu> - 0.0.4
+2013-10-07 Aaron Russo <arusso@berkeley.edu> - 0.0.5
+* Issue#9: Allow override of Ssl::Cert dependencies
+
+2013-10-03 Aaron Russo <arusso@berkeley.edu> - 0.0.4
 * Issue#6: Ability to enable/disable include files
 * Issue#8: Implemented unused document_root parameter in vhosts
 
