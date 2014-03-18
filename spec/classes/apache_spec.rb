@@ -11,7 +11,7 @@ describe( 'apache', :type => :class ) do
       it do
         should contain_apache__install.that_comes_before('Class[apache::config]')
         should contain_apache__config.that_notifies('Class[apache::service]')
-        should contain_apache__service
+        should contain_apache__service.that_comes_before('Class[apache]')
       end
     end
     context "Version 6" do
@@ -19,7 +19,7 @@ describe( 'apache', :type => :class ) do
       it do
         should contain_apache__install.that_comes_before('Class[apache::config]')
         should contain_apache__config.that_notifies('Class[apache::service]')
-        should contain_apache__service
+        should contain_apache__service.that_comes_before('Class[apache]')
       end
     end
   end
