@@ -12,7 +12,7 @@ class apache::namevirtualhost {
     owner   => 'root',
     group   => 'root',
     mode    => '0444',
-    content => "NameVirtualHost *:80\nNameVirtualHost *:443",
+    content => "NameVirtualHost *:80\nNameVirtualHost *:443\n",
     notify  => Class['apache::service'],
   }
 }

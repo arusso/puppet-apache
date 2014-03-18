@@ -215,7 +215,7 @@ LoadModule version_module modules/mod_version.so
 #LoadModule unique_id_module modules/mod_unique_id.so
 #
 
-# Load our module definitions first, then our vhosts
+# Load module configurations first, then vhost configurations
 Include conf.d/module-*.conf
 Include conf.d/vhost-*.conf
 

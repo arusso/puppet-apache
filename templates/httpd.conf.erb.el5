@@ -204,7 +204,7 @@ LoadModule version_module modules/mod_version.so
 #LoadModule cern_meta_module modules/mod_cern_meta.so
 #LoadModule asis_module modules/mod_asis.so
 
-# Load our module definitions, then our vhost configurations
+# Load module configurations first, then vhost configurations
 Include conf.d/module-*.conf
 Include conf.d/vhost-*.conf
 
@@ -351,11 +351,11 @@ DocumentRoot "/var/www/html"
     # of a username on the system (depending on home directory
     # permissions).
     #
-    UserDir disable
+    UserDir disabled
 
     #
     # To enable requests to /~user/ to serve the user's public_html
-    # directory, remove the "UserDir disable" line above, and uncomment
+    # directory, remove the "UserDir disabled" line above, and uncomment
     # the following line instead:
     # 
     #UserDir public_html
