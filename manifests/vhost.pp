@@ -93,12 +93,13 @@ define apache::vhost (
   $provide_include = $apache::params::provide_include,
   $server_alias = undef,
   $server_name = $name,
-  $ssl = $name,
+  $ssl = false,
   $ssl_cert_resource = $apache::params::ssl_cert_resource,
   $ssl_crt_file = undef,
   $ssl_key_file = undef,
   $ssl_int_file = undef,
 ) {
+  require ::apache::params
   include apache::namevirtualhost
 
   validate_bool( $provide_include )
