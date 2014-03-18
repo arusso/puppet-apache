@@ -6,5 +6,6 @@
 # apache class
 #
 class apache::install {
+  require ::apache
   package { $apache::package_name: ensure => 'present' }
 }
