@@ -1,0 +1,51 @@
+# Managed by Puppet (<%= @name %>)
+#
+LoadModule ssl_module modules/mod_ssl.so
+
+#
+# When we also provide SSL we have to listen to the 
+# the HTTPS port in addition.
+#
+<% if @listen_ipaddrs.kind_of? Array and @listen_ipaddrs.count > 0 -%>
+<% @listen_ipaddrs.each do |ip| -%>
+Listen <%= ip %>:443
+<% end -%>
+<% else -%>
+Listen 443
+<% end -%>
+
+##
+##  SSL Global Context
+##
+##  All SSL configuration in this context applies both to
+##  the main server and all SSL-enabled virtual hosts.
+##
+
+#   Pass Phrase Dialog:
+#   Configure the pass phrase gathering process.
+#   The filtering dialog program (`builtin' is a internal
+#   terminal dialog) has to provide the pass phrase on stdout.
+SSLPassPhraseDialog  builtin
+
+#   Inter-Process Session Cache:
+#   Configure the SSL Session Cache: First the mechanism 
+#   to use and second the expiring timeout (in seconds).
+SSLSessionCache         shmcb:/var/cache/mod_ssl/scache(512000)
+SSLSessionCacheTimeout  300
+
+#   Semaphore:
+#   Configure the path to the mutual exclusion semaphore the
+#   SSL engine uses internally for inter-process synchronization. 
+SSLMutex default
+
+SSLRandomSeed startup file:/dev/urandom  256
+SSLRandomSeed connect builtin
+
+#
+# Use "SSLCryptoDevice" to enable any supported hardware
+# accelerators. Use "openssl engine -v" to list supported
+# engine names.  NOTE: If you enable an accelerator and the
+# server does not start, consult the error logs and ensure
+# your accelerator is functioning properly. 
+#
+SSLCryptoDevice builtin

@@ -12,6 +12,7 @@ class apache::params {
   $ssl = false
   $ssl_cert_resource = 'UNSET'
   $provide_include = true
+  $listen_ips = []
 
   # DISTRO/VERSION DEPENDANT PARAMETER LOGIC
 

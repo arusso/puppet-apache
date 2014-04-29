@@ -25,10 +25,18 @@
 #  Usage:
 #     start = '<true|false|noop>'
 #
+# [*listen_ips*]
+#   The IP addresses puppet should configure apache to listen on. Provide as an
+#   array. The default will have Apache listen on all configured IP addresses.
+#
+#  Usage:
+#     listen_ips = ['127.0.0.1', ...]
+#
 class apache(
   $enable = $apache::params::enable,
   $server_admin = $apache::params::server_admin,
   $start = $apache::params::start,
+  $listen_ips = $apache::params::listen_ips,
 ) inherits apache::params {
   class { 'apache::install': } ->
   class { 'apache::config': } ~>
