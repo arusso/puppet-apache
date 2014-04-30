@@ -14,7 +14,6 @@ describe( 'apache', :type => :class ) do
 
   describe "os-independent" do
     context "check httpd file contents" do
-
       let :facts do
         default_facts
       end

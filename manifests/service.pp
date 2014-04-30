@@ -9,9 +9,29 @@ class apache::service(
   $service_enable = true,
   $service_name   = $::apache::params::service_name,
 ) {
+  case type( $service_ensure ) {
+    boolean: { validate_bool( $service_ensure ) }
+    string: { validate_re( $service_ensure, [ 'noop', 'running', 'stopped' ] ) }
+    default: { fail("invalid value '${service_ensure}' for \$service_ensure") }
+  }
+  $ensure_r = $service_ensure ? {
+    'noop'  => undef,
+    default => $service_ensure,
+  }
+
+  case type( $service_enable ) {
+    boolean: { validate_bool( $service_enable ) }
+    string: { validate_re( $service_enable, [ 'noop', 'manual' ] ) }
+    default: { fail("invalid value '${service_enable}' for \$service_enable") }
+  }
+  $enable_r = $service_enable ? {
+    'noop'  => undef,
+    default => $service_enable,
+  }
+
   service { 'httpd':
-    ensure  => $service_ensure,
+    ensure  => $ensure_r,
     name    => $service_name,
-    enable  => $service_enable,
+    enable  => $enable_r,
   }
 }
