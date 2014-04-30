@@ -3,10 +3,11 @@
 # Installs and enables the mod_ssl module
 #
 class apache::mod::ssl {
-  include apache::params
+  require ::apache
+  require ::apache::params
 
-  validate_array($apache::listen_ips)
-  $listen_ipaddrs = $apache::listen_ips
+  validate_array($::apache::listen_ips)
+  $listen_ipaddrs = $::apache::listen_ips
 
   package { 'mod_ssl': ensure => 'installed' }
 

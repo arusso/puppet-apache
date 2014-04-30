@@ -7,10 +7,14 @@
 # inside of the primary apache class.
 #
 class apache::config {
+  require ::apache
+  require ::apache::params
+
   $config_template = $apache::params::config_template
   $config_file = $apache::params::config_file
   validate_array($apache::listen_ips)
   $listen_ipaddrs = $apache::listen_ips
+  $conf_d_dir = $apache::params::conf_d_dir
 
   file { $conf_d_dir:
     ensure  => 'directory',

@@ -38,8 +38,14 @@ class apache(
   $start = $apache::params::start,
   $listen_ips = $apache::params::listen_ips,
 ) inherits apache::params {
-  class { 'apache::install': } ->
-  class { 'apache::config': } ~>
-  class { 'apache::service': } ->
-  Class['apache']
+  include apache::install,apache::config,apache::service
+
+  anchor { 'apache::start': }
+  anchor { 'apache::end': }
+
+  Anchor[apache::start] ->
+    Class[apache::install] ->
+    Class[apache::config] ~>
+    Class[apache::service] ->
+    Anchor[apache::end]
 }

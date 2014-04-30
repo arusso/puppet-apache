@@ -5,6 +5,7 @@
 # primary apache class
 #
 class apache::service {
+  require ::apache
   $service = $apache::service_name
 
   case bool2str( $apache::enable, false) {

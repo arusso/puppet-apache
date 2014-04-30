@@ -90,18 +90,23 @@
 define apache::vhost (
   $is_default = $apache::params::is_default,
   $document_root = $apache::params::document_root,
-  $provide_include = $apache::params::provide_include,
+  $provide_include = 'UNSET',
   $server_alias = undef,
   $server_name = $name,
-  $ssl = $name,
+  $ssl = false,
   $ssl_cert_resource = $apache::params::ssl_cert_resource,
   $ssl_crt_file = undef,
   $ssl_key_file = undef,
   $ssl_int_file = undef,
 ) {
+  require ::apache::params
   include apache::namevirtualhost
 
-  validate_bool( $provide_include )
+  $provide_include_r = $provide_include ? {
+    'UNSET' => $apache::params::provide_include,
+    default => any2bool($provide_include),
+  }
+  validate_bool( $provide_include_r )
 
   if $document_root { validate_absolute_path( $document_root ) }
 
@@ -143,7 +148,7 @@ define apache::vhost (
     if ! $ssl_int_file == undef { validate_absolute_path( $ssl_int_file ) }
 
     # Our user-editable config file
-    if $provide_include {
+    if $provide_include_r {
       file { "${apache::params::vhost_dir}/vhost-${server_name}.ssl.include":
         ensure  => 'file',
         owner   => 'root',
@@ -165,7 +170,7 @@ define apache::vhost (
   }
 
   # Our user-editable config file
-  if $provide_include {
+  if $provide_include_r {
     file { "${apache::params::vhost_dir}/vhost-${server_name}.include":
       owner   => 'root',
       group   => 'root',

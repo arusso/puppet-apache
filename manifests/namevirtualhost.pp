@@ -3,6 +3,7 @@
 # Sets up NameVirtualHost entries
 #
 class apache::namevirtualhost {
+  require ::apache::params
   $conf_d_dir = params_lookup('conf_d_dir', false, $apache::params::conf_d_dir)
 
   # not technically a module, but we really just need it to load before all the
