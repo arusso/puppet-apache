@@ -1,5 +1,5 @@
 name 'arusso-apache'
-version '0.0.7'
+version '0.0.8'
 summary 'Apache Web Server Management'
 license 'MIT License'
 description "This module manages the apache web server, foo."

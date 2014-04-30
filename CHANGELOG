@@ -1,3 +1,7 @@
+2014-04-29 Aaron Russo <arusso@berkeley.edu> - 0.0.8
+* tweak secure-cookies config to edit the header
+* wrap module loads in IfModule statements 
+
 2014-04-29 Aaron Russo <arusso@berkeley.edu> - 0.0.7
 * Add support for allowing apache to listen selectively (ajz@berkeley.edu)
 
