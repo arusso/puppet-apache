@@ -1,3 +1,6 @@
+2014-04-29 Aaron Russo <arusso@berkeley.edu> - 0.0.7
+* Add support for allowing apache to listen selectively (ajz@berkeley.edu)
+
 2014-02-12 Aaron Russo <arusso@berkeley.edu> - 0.0.6
 * Add support for enabling secure cookies (jmakaiwi@berkeley.edu)
 
