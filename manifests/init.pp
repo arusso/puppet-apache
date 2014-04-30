@@ -33,19 +33,53 @@
 #     listen_ips = ['127.0.0.1', ...]
 #
 class apache(
-  $enable = $apache::params::enable,
-  $server_admin = $apache::params::server_admin,
-  $start = $apache::params::start,
-  $listen_ips = $apache::params::listen_ips,
+  $service_enable = true,
+  $server_admin = $::apache::params::server_admin,
+  $service_ensure = 'running',
+  $service_name = $::apache::params::service_name,
+  $ports_file = $::apache::params::ports_file,
+  $confd_dir = $::apache::params::confd_dir,
+  $config_file = $::apache::params::config_file,
+  # TODO: combine httpd.conf.* into a single httpd.conf
+  $config_template = $::apache::params::config_template,
 ) inherits apache::params {
-  include apache::install,apache::config,apache::service
+  ensure_packages(['httpd'])
 
-  anchor { 'apache::start': }
-  anchor { 'apache::end': }
+  concat { $ports_file:
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    notify  => Service['Apache::Service'],
+    require => Package['httpd'],
+  }
 
-  Anchor[apache::start] ->
-    Class[apache::install] ->
-    Class[apache::config] ~>
-    Class[apache::service] ->
-    Anchor[apache::end]
+  class { '::apache::service':
+    service_ensure => $service_ensure,
+    service_enable => $service_enable,
+    service_name   => $service_name,
+  }
+
+  Exec {
+    path => '/bin:/sbin:/usr/bin:/usr/sbin',
+  }
+  exec { "mkdir ${confd_dir}":
+    creates => $confd_dir,
+    require => Package['httpd'],
+  }
+  file { $confd_dir:
+    ensure  => 'directory',
+    force   => true,
+    purge   => true,
+    recurse => true,
+    notify  => Class['Apache::Service'],
+    require => Package['httpd'],
+  }
+
+  file { $config_file:
+    ensure  => 'file',
+    content => template( $config_template ),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
 }

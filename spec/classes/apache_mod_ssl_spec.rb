@@ -1,12 +1,26 @@
 require 'spec_helper'
 
 describe( 'apache::mod::ssl', :type => :class ) do
-  let(:redhat_facts) {{ 'osfamily' => 'RedHat' }}
-  let(:redhat6_facts) {{'operatingsystemrelease' => '6.5' }.merge(redhat_facts)}
-  let(:redhat5_facts) {{'operatingsystemrelease' => '5.10'}.merge(redhat_facts)}
+  let :pre_condition do
+    'class { "apache": }'
+  end
+
+  let :default_facts do
+    {
+      :concat_basedir => '/spec/concat',
+    }
+  end
 
   context "on Red Hat" do
+    let :redhat_facts do
+      default_facts.merge({ 'osfamily' => 'RedHat' })
+    end
+
     context "Version 5" do
+      let :redhat5_facts do
+        redhat_facts.merge({ :operatingsystemrelease => '5.10' })
+      end
+
       let(:facts) {redhat5_facts}
       it do
         should contain_package('mod_ssl').with_ensure('installed')
@@ -23,6 +37,9 @@ describe( 'apache::mod::ssl', :type => :class ) do
       end
     end
     context "Version 6" do
+      let :redhat6_facts do
+        redhat_facts.merge({ :operatingsystemrelease => '6.5' })
+      end
       let(:facts) {redhat6_facts}
       it do
         should contain_package('mod_ssl').with_ensure('installed')

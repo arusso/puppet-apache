@@ -13,7 +13,6 @@ describe( 'apache::service', :type => :class ) do
           'ensure' => 'running',
           'name' => 'httpd',
           'enable' => true,
-          'require' => 'Class[Apache::Config]',
         })
       end
     end
@@ -24,7 +23,6 @@ describe( 'apache::service', :type => :class ) do
           'ensure' => 'running',
           'name' => 'httpd',
           'enable' => true,
-          'require' => 'Class[Apache::Config]',
         })
       end
     end

@@ -1,19 +1,13 @@
-# == Class: apache::namevirtualhost
-#
-# Sets up NameVirtualHost entries
-#
-class apache::namevirtualhost {
-  require ::apache::params
-  $conf_d_dir = params_lookup('conf_d_dir', false, $apache::params::conf_d_dir)
+define apache::namevirtualhost {
+  if ! defined( Class[Apache::Params] ) {
+    fail('You must include Class[Apache::Params] before using any apache resource')
+  }
 
-  # not technically a module, but we really just need it to load before all the
-  # virtual host definitions
-  file { "${conf_d_dir}/module-namevirtualhost.conf":
+  $nvh_addr_port = $name
+
+  concat::fragment { "Namevirtualhost ${nvh_addr_port}":
     ensure  => present,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0444',
-    content => "NameVirtualHost *:80\nNameVirtualHost *:443\n",
-    notify  => Class['apache::service'],
+    target  => $::apache::params::ports_file,
+    content => template('apache/namevirtualhost.erb'),
   }
 }
