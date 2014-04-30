@@ -133,7 +133,13 @@ MaxRequestsPerChild  0
 # prevent Apache from glomming onto all bound IP addresses (0.0.0.0)
 #
 #Listen 12.34.56.78:80
+<% if @listen_ipaddrs.kind_of? Array and @listen_ipaddrs.count > 0 then -%>
+<% @listen_ipaddrs.each do |ip| -%>
+Listen <%= ip %>:80
+<% end -%>
+<% else -%>
 Listen 80
+<% end -%>
 
 #
 # Dynamic Shared Object (DSO) Support

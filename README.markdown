@@ -8,7 +8,7 @@ managing ssl.
 ```puppet
   # configure the global apache
   class { 'apache':
-    ensure       => running,
+    start        => true,
     enable       => true,
     server_admin => 'webmaster@example.com',
   }

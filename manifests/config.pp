@@ -9,6 +9,8 @@
 class apache::config {
   $config_template = $apache::params::config_template
   $config_file = $apache::params::config_file
+  validate_array($apache::listen_ips)
+  $listen_ipaddrs = $apache::listen_ips
 
   file { $conf_d_dir:
     ensure  => 'directory',
