@@ -7,6 +7,7 @@
 # inside of the primary apache class.
 #
 class apache::config {
+  require ::apache
   require ::apache::params
 
   $config_template = $apache::params::config_template

@@ -14,7 +14,7 @@ describe( 'apache::mod::ssl', :type => :class ) do
           'owner' => 'root',
           'group' => 'root',
           'mode' => '0444',
-          'source' => 'puppet:///apache/ssl.conf',
+          #'source' => 'puppet:///apache/ssl.conf',
         })
         should contain_file('/etc/httpd/conf.d/module-ssl.conf').with({
           'ensure' => 'link',
@@ -30,7 +30,7 @@ describe( 'apache::mod::ssl', :type => :class ) do
           'owner' => 'root',
           'group' => 'root',
           'mode' => '0444',
-          'source' => 'puppet:///apache/ssl.conf',
+          #'source' => 'puppet:///apache/ssl.conf',
         })
         should contain_file('/etc/httpd/conf.d/module-ssl.conf').with({
           'ensure' => 'link',
