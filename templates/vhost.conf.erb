@@ -2,7 +2,7 @@
 # values are in the .include and .ssl.include files, located in this directory
 
 # HTTP VirtualHost
-<VirtualHost *:80>
+<VirtualHost <%= @ip %>:<%= @port %>>
   ServerName <%= @server_name %>
 <%# Let's add some server aliases -%>
 <% if @server_alias_real.kind_of? Array and @server_alias_real.count > 0 -%>
@@ -28,7 +28,7 @@
 
 <% if @ssl_real -%>
 # HTTPS VirtualHost
-<VirtualHost *:443>
+<VirtualHost <%= @ssl_ip %>:<%= @ssl_port %>>
   ServerName <%= @server_name %>
 <%# Let's add some server aliases -%>
 <% if @server_alias_real.kind_of? Array and @server_alias_real.count > 0 -%>
