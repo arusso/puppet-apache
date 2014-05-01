@@ -42,7 +42,7 @@ class apache(
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    notify  => Service['Apache::Service'],
+    notify  => Class['Apache::Service'],
     require => Package['httpd'],
   }
 
