@@ -3,19 +3,14 @@
 # Installs and enables the mod_ssl module
 #
 class apache::mod::ssl {
-  # this shouldn't be needed, but it'll prevent any mis-configurations by
-  # failing early if for some reason apache isn't defined first. this code
-  # should be re-evaluted once we get to Puppet 3.x
-  if !defined( Class['Apache'] ) {
-    fail('you must include apache first!')
+  # we use the anchor pattern here to make sure our resources dont go floating
+  # off. we should re-evalute this when we are ready to drop 2.x support.
+  anchor { 'apache::ssl::start':
+    require => Class[apache],
+    before  => [ File['ssl.conf'], Package['mod_ssl'] ],
   }
 
   package { 'mod_ssl': ensure => 'installed' }
-
-  anchor { 'apache::ssl::start':
-    require => Class[apache],
-    before  => File['ssl.conf'],
-  }
 
   file { 'ssl.conf':
     ensure  => present,
@@ -24,6 +19,7 @@ class apache::mod::ssl {
     group   => 'root',
     mode    => '0444',
     content => template('apache/ssl.conf.erb'),
+    require => Package['mod_ssl'],
     before  => File['module-ssl.conf'],
   }
 
