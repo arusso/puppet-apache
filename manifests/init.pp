@@ -36,6 +36,9 @@ class apache(
   # TODO: combine httpd.conf.* into a single httpd.conf
   $config_template = $::apache::params::config_template,
 ) inherits apache::params {
+  anchor { 'apache::start':
+    before => Package['httpd'],
+  }
   ensure_packages(['httpd'])
 
   concat { $ports_file:
@@ -74,5 +77,10 @@ class apache(
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
+    require => File[$confd_dir],
+  }
+
+  anchor { 'apache::end':
+    require => File[$config_file],
   }
 }
