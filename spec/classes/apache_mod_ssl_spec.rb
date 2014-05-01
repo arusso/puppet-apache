@@ -24,14 +24,16 @@ describe( 'apache::mod::ssl', :type => :class ) do
       let(:facts) {redhat5_facts}
       it do
         should contain_package('mod_ssl').with_ensure('installed')
-        should contain_file('/etc/httpd/conf.d/ssl.conf').with({
+        should contain_file('ssl.conf').with({
           'owner' => 'root',
+          'path' => '/etc/httpd/conf.d/ssl.conf',
           'group' => 'root',
           'mode' => '0444',
           #'source' => 'puppet:///apache/ssl.conf',
         })
-        should contain_file('/etc/httpd/conf.d/module-ssl.conf').with({
+        should contain_file('module-ssl.conf').with({
           'ensure' => 'link',
+          'path' => '/etc/httpd/conf.d/module-ssl.conf',
           'target' => '/etc/httpd/conf.d/ssl.conf',
         })
       end
@@ -43,14 +45,16 @@ describe( 'apache::mod::ssl', :type => :class ) do
       let(:facts) {redhat6_facts}
       it do
         should contain_package('mod_ssl').with_ensure('installed')
-        should contain_file('/etc/httpd/conf.d/ssl.conf').with({
+        should contain_file('ssl.conf').with({
           'owner' => 'root',
+          'path' => '/etc/httpd/conf.d/ssl.conf',
           'group' => 'root',
           'mode' => '0444',
           #'source' => 'puppet:///apache/ssl.conf',
         })
-        should contain_file('/etc/httpd/conf.d/module-ssl.conf').with({
+        should contain_file('module-ssl.conf').with({
           'ensure' => 'link',
+          'path' => '/etc/httpd/conf.d/module-ssl.conf',
           'target' => '/etc/httpd/conf.d/ssl.conf',
         })
       end
