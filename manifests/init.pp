@@ -41,11 +41,17 @@ class apache(
   }
   ensure_packages(['httpd'])
 
+  # only notify the service if we are managing the run state
+  $service_notify = $service_ensure ? {
+    'noop'  => undef,
+    default => 'Class[apache::service]',
+  }
+
   concat { $ports_file:
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    notify  => Class['Apache::Service'],
+    notify  => $service_notify,
     require => Package['httpd'],
   }
 
@@ -67,7 +73,7 @@ class apache(
     force   => true,
     purge   => true,
     recurse => true,
-    notify  => Class['Apache::Service'],
+    notify  => $service_notify,
     require => Package['httpd'],
   }
 
