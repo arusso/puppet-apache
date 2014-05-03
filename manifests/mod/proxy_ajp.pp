@@ -3,6 +3,8 @@
 # Installs (if necessary) and enables mod_proxy_ajp
 #
 class apache::mod::proxy_ajp {
+  ::apache::mod { 'proxy_ajp': }
+
   file { '/etc/httpd/conf.d/module-proxy_ajp.conf':
     ensure  => 'link',
     target  => '/etc/httpd/conf.d/proxy_ajp.conf',
