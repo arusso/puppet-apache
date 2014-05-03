@@ -23,7 +23,7 @@ describe( 'apache::mod::ssl', :type => :class ) do
 
       let(:facts) {redhat5_facts}
       it do
-        should contain_package('mod_ssl').with_ensure('installed')
+        should contain_apache__mod('ssl')
         should contain_file('ssl.conf').with({
           'owner' => 'root',
           'path' => '/etc/httpd/conf.d/ssl.conf',
@@ -44,7 +44,7 @@ describe( 'apache::mod::ssl', :type => :class ) do
       end
       let(:facts) {redhat6_facts}
       it do
-        should contain_package('mod_ssl').with_ensure('installed')
+        should contain_apache__mod('ssl')
         should contain_file('ssl.conf').with({
           'owner' => 'root',
           'path' => '/etc/httpd/conf.d/ssl.conf',

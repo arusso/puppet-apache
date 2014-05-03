@@ -1,9 +1,25 @@
 require 'spec_helper'
 
 describe( 'apache::mod::secure_cookie', :type => :class ) do
-  let(:redhat_facts) {{ 'osfamily' => 'RedHat' }}
-  let(:redhat6_facts) {{'operatingsystemrelease' => '6.5' }.merge(redhat_facts)}
-  let(:redhat5_facts) {{'operatingsystemrelease' => '5.10'}.merge(redhat_facts)}
+  let :pre_condition do
+    "class { 'apache': }"
+  end
+
+  let :base_facts do
+    {
+      'concat_basedir' => '/spec/concat',
+    }
+  end
+    
+  let :redhat_facts do
+    base_facts.merge({ 'osfamily' => 'RedHat' })
+  end
+  let :redhat6_facts do
+    redhat_facts.merge({'operatingsystemrelease' => '6.5' })
+  end
+  let :redhat5_facts do
+    redhat_facts.merge({'operatingsystemrelease' => '5.10'})
+  end
 
   context "on Red Hat" do
     context "Version 5" do
