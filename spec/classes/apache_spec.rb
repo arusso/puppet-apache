@@ -1,27 +1,39 @@
 require 'spec_helper'
 
 describe( 'apache', :type => :class ) do
-  let(:redhat_facts) {{ 'osfamily' => 'RedHat' }}
-  let(:redhat6_facts) {{'operatingsystemrelease' => '6.5' }.merge(redhat_facts)}
-  let(:redhat5_facts) {{'operatingsystemrelease' => '5.10'}.merge(redhat_facts)}
+  let :pre_condition do
+    'include apache'
+  end
+  let :default_facts do
+    {
+      :concat_basedir => '/concat',
+      :osfamily => 'RedHat',
+      :operatingsystemrelease => '6.5',
+    }
+  end
 
-  context "on Red Hat" do
-    context "Version 5" do
-      let(:facts) { redhat5_facts }
-      it do
-        should contain_anchor('apache::start').that_comes_before('Class[apache::install]')
-        should contain_apache__install.that_comes_before('Class[apache::config]')
-        should contain_apache__config.that_notifies('Class[apache::service]')
-        should contain_apache__service.that_comes_before('Anchor[apache::end]')
+  describe "os-independent" do
+    context "check httpd file contents" do
+      let :facts do
+        default_facts
+      end
+
+      [
+        /^Include \/etc\/httpd\/conf\/ports.conf$/,
+      ].each do |check|
+        it do
+          should contain_file('/etc/httpd/conf/httpd.conf').with_content(check)
+        end
       end
     end
-    context "Version 6" do
-      let(:facts) { redhat6_facts }
+
+    context "check for ports file" do
+      let :facts do
+        default_facts
+      end
+
       it do
-        should contain_anchor('apache::start').that_comes_before('Class[apache::install]')
-        should contain_apache__install.that_comes_before('Class[apache::config]')
-        should contain_apache__config.that_notifies('Class[apache::service]')
-        should contain_apache__service.that_comes_before('Anchor[apache::end]')
+        should contain_concat('/etc/httpd/conf/ports.conf')
       end
     end
   end

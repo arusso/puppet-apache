@@ -1,9 +1,24 @@
 require 'spec_helper'
 
 describe( 'apache::vhost',:type => :define) do
-  let(:redhat_facts) {{ 'osfamily' => 'RedHat' }}
-  let(:redhat5_facts) {{'operatingsystemrelease' => '5.10'}.merge(redhat_facts)}
-  let(:redhat6_facts) {{'operatingsystemrelease' => '6.5' }.merge(redhat_facts)}
+  let :pre_condition do
+    'include apache'
+  end
+
+  let :default_facts do
+    {
+      :concat_basedir => '/spec/concat',
+    }
+  end
+
+
+  let :redhat_facts do
+    default_facts.merge({ 'osfamily' => 'RedHat' })
+  end
+
+  let :redhat5_facts do
+    redhat_facts.merge({ 'operatingsystemrelease' => '5.10' })
+  end
 
   context 'simple vhost' do
     let(:title) { 'www.example.com' }

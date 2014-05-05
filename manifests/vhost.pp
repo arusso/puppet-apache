@@ -88,22 +88,30 @@
 #   ssl_crt_resource => 'noset',
 # }
 define apache::vhost (
+  $ip = '*',
   $is_default = $apache::params::is_default,
+  $port = '80',
   $document_root = $apache::params::document_root,
   $provide_include = 'UNSET',
   $server_alias = undef,
   $server_name = $name,
   $ssl = false,
+  $ssl_ip = '*',
+  $ssl_port = '443',
   $ssl_cert_resource = $apache::params::ssl_cert_resource,
   $ssl_crt_file = undef,
   $ssl_key_file = undef,
   $ssl_int_file = undef,
 ) {
-  require ::apache::params
-  include apache::namevirtualhost
+  if !defined(Class['Apache::Params']) {
+    fail('You must include Class[Apache::Params] before using Apache::Vhost resource')
+  }
+
+  ensure_resource('apache::listen', "${ip}:${port}")
+  ensure_resource('apache::namevirtualhost', "${ip}:${port}")
 
   $provide_include_r = $provide_include ? {
-    'UNSET' => $apache::params::provide_include,
+    'UNSET' => $::apache::params::provide_include,
     default => any2bool($provide_include),
   }
   validate_bool( $provide_include_r )
@@ -126,6 +134,9 @@ define apache::vhost (
 
   $ord = $is_default ? { true => '0', default => '1' }
   if $ssl_real {
+    ensure_resource('apache::listen', "${ssl_ip}:${ssl_port}")
+    ensure_resource('apache::namevirtualhost', "${ssl_ip}:${ssl_port}")
+
     # include our class to setup the ssl module for apache
     include apache::mod::ssl
 

@@ -1,7 +1,7 @@
 # apache Module #
 
-This module manages apache, with emphasis on setting up virtual hosts and
-managing ssl.
+This module manages apache with particular emphasis on providing mechanisms to
+allow for unmanaged (by Puppet) configuration of virtual hosts.
 
 # Examples #
 

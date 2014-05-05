@@ -4,17 +4,6 @@
 # containing a large portion of the OS logic required for this module
 #
 class apache::params {
-  $is_default = false
-  $start = true
-  $enable = true
-  $server_admin = 'root@localhost'
-  $document_root = '/var/www/html'
-  $ssl = false
-  $ssl_cert_resource = 'UNSET'
-  $provide_include = true
-  $listen_ips = []
-
-  # DISTRO/VERSION DEPENDANT PARAMETER LOGIC
 
   case $::osfamily {
     #
@@ -26,12 +15,13 @@ class apache::params {
           /^6\.[0-9]+$/: { $config_template = 'apache/httpd.conf.erb.el6' }
           default: { fail("Unsupported ${::osfamily} version!") }
       }
+      $server_root = '/etc/httpd'
+      $conf_dir = "${server_root}/conf"
+      $confd_dir = "${server_root}/conf.d"
+      $vhost_dir = $confd_dir
+      $config_file = "${conf_dir}/httpd.conf"
       $package_name = 'httpd'
       $service_name = 'httpd'
-      $server_root = '/etc/httpd'
-      $conf_d_dir = "${server_root}/conf.d"
-      $vhost_dir = "${server_root}/conf.d"
-      $config_file = "${server_root}/conf/httpd.conf"
     }
 
     #
@@ -41,4 +31,13 @@ class apache::params {
       fail("\${::osfamily} = '${::osfamily}' not supported!")
     } # case default
   } # case $::osfamily
+
+  $is_default = false
+  $server_admin = 'root@localhost'
+  $document_root = '/var/www/html'
+  $ssl = false
+  $ssl_cert_resource = 'UNSET'
+  $provide_include = true
+  $ports_file = "${conf_dir}/ports.conf"
+
 } # $apache::params

@@ -124,22 +124,7 @@ ThreadsPerChild     25
 MaxRequestsPerChild  0
 </IfModule>
 
-#
-# Listen: Allows you to bind Apache to specific IP addresses and/or
-# ports, in addition to the default. See also the <VirtualHost>
-# directive.
-#
-# Change this to Listen on specific IP addresses as shown below to 
-# prevent Apache from glomming onto all bound IP addresses (0.0.0.0)
-#
-#Listen 12.34.56.78:80
-<% if @listen_ipaddrs.kind_of? Array and @listen_ipaddrs.count > 0 then -%>
-<% @listen_ipaddrs.each do |ip| -%>
-Listen <%= ip %>:80
-<% end -%>
-<% else -%>
-Listen 80
-<% end -%>
+Include <%= @ports_file %>
 
 #
 # Dynamic Shared Object (DSO) Support
