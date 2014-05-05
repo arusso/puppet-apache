@@ -11,6 +11,9 @@
 #  Usage:
 #    document_root = '/path/to/doc/root'
 #
+# [*ip*]
+#    IP address to listen on for HTTP traffic. Defaults to '*'.
+#
 # [*is_default*]
 #   Distinguishes the vhost as the default one, naming the configuration file
 #   appropriately such that it will come before non-default vhosts. Multiple
@@ -20,6 +23,9 @@
 #    is_default = true
 #  or
 #    is_default = false
+#
+# [*port*]
+#   TCP port to listen on for HTTP traffic. Defaults to 80.
 #
 # [*provide_include*]
 #   Provide .include files that can be used in conjunction with sudoer rules
@@ -72,6 +78,12 @@
 #
 #  Usage:
 #    ssl_int_file = '/etc/pki/tls/certs/intermediate.crt'
+#
+# [*ssl_ip*]
+#   IP address to listen on for HTTPS traffic. Defaults to '*'.
+#
+# [*ssl_port*]
+#   TCP port to listen on for HTTPS traffic. Default to 443.
 #
 # === Example:
 #

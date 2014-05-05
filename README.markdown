@@ -8,19 +8,20 @@ allow for unmanaged (by Puppet) configuration of virtual hosts.
 ```puppet
   # configure the global apache
   class { 'apache':
-    start        => true,
-    enable       => true,
-    server_admin => 'webmaster@example.com',
+    service_ensure => true,
+    service_enable => true,
+    server_admin   => 'webmaster@example.com',
   }
 
   # setup a vhost for www.example.com, mark it as the default vhost and
   # add a few aliases.
   apache::vhost { 'www.example.com':
-    is_default   => true,
-    server_name  => 'www.example.com',
-    server_alias => [ 'www-2.example.com',
+    document_root => '/var/www/html/www.example.com',
+    is_default    => true,
+    server_name   => 'www.example.com',
+    server_alias  => [ 'www-2.example.com',
                       'blog.example.com' ],
-    ssl          => false,
+    ssl           => false,
   }
 
   # if server_name is not specified, the $namevar is used. So in this case

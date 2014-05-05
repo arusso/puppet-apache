@@ -25,6 +25,20 @@
 #  Usage:
 #     start = '<true|false|noop>'
 #
+# [*ports_file*]
+#   File to store listen/namevirtualhost ports configuration in.
+#   Defaults to /etc/httpd/conf/ports.conf
+#
+# [*confd_dir*]
+#   Location of the conf.d directory. Defaults to /etc/httpd/conf.d
+#
+# [*config_file*]
+#   Location of main httpd.conf file. Defaults to /etc/httpd/conf/httpd.conf
+#
+# [*config_template*]
+#   Template to use when generating httpd.conf file. Defaults to os-specific erb
+#   template based on which platform we're running on.
+#
 class apache(
   $server_admin = $::apache::params::server_admin,
   $service_enable = true,
