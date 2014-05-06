@@ -1,3 +1,6 @@
+2014-05-06 Aaron Russo <arusso@berkeley.edu> - 0.1.2
+* allow override of template / config source for vhosts
+
 2014-05-06 Aaron Russo <arusso@berkeley.edu> - 0.1.1
 * remove non-critical functionality that breaks due to puppet parser limitations
 
