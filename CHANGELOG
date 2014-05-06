@@ -1,3 +1,6 @@
+2014-05-06 Aaron Russo <arusso@berkeley.edu> - 0.1.1
+* remove non-critical functionality that breaks due to puppet parser limitations
+
 2014-05-05 Aaron Russo <arusso@berkeley.edu> - 0.1.0
 * refactor code to suck less
 
