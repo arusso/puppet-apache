@@ -5,9 +5,11 @@
 # remove when we build it into the apache class.
 #
 class apache::mod::secure_cookie {
+  require ::apache::params
+
   ::apache::mod { 'secure_cookie': }
 
-  file { "${::apache::confd_dir}/secure_cookie.conf":
+  file { "${::apache::params::confd_dir}/secure_cookie.conf":
     ensure  => present,
     owner   => root,
     group   => root,
@@ -17,8 +19,8 @@ class apache::mod::secure_cookie {
     notify  => Class['apache::service'],
   }
 
-  file { "${::apache::confd_dir}/module-secure_cookie.conf":
+  file { "${::apache::params::confd_dir}/module-secure_cookie.conf":
     ensure => link,
-    target => "${::apache::confd_dir}/secure_cookie.conf",
+    target => "${::apache::params::confd_dir}/secure_cookie.conf",
   }
 }
