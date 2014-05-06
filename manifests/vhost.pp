@@ -85,6 +85,13 @@
 # [*ssl_port*]
 #   TCP port to listen on for HTTPS traffic. Default to 443.
 #
+# [*vhost_conf_source*]
+#   Specify the puppet filepath to a static vhost configuration file. Note that
+#   if vhost_conf_template is set, this will have no effect.
+#
+# [*vhost_conf_template*]
+#   Specify the template to use instead of the built-in vhost template
+#
 # === Example:
 #
 # apache::vhost { 'www.example.com':
@@ -114,6 +121,8 @@ define apache::vhost (
   $ssl_crt_file = undef,
   $ssl_key_file = undef,
   $ssl_int_file = undef,
+  $vhost_conf_source = 'UNSET',
+  $vhost_conf_template = 'UNSET',
 ) {
   if !defined(Class['Apache::Params']) {
     fail('You must include Class[Apache::Params] before using Apache::Vhost resource')
@@ -183,13 +192,27 @@ define apache::vhost (
     }
   } # if ssl_real
 
-  # Our primary config file, not user editable
+  # setup our vhost configuration file
+  if $vhost_conf_template != 'UNSET' {
+    # user specified a custom template
+    $vhost_content_r = template( $vhost_conf_template )
+    $vhost_source_r = undef
+  } elsif $vhost_conf_source != 'UNSET' {
+    # user specified a custom file source
+    $vhost_source_r = $vhost_conf_source
+    $vhost_content_r = undef
+  } else {
+    # user didn't specify crap, let's use the default template
+    $vhost_source_r = undef
+    $vhost_content_r = template('apache/vhost.conf.erb')
+  }
   file { "${apache::params::vhost_dir}/vhost-${ord}-${server_name}.conf":
     ensure  => 'file',
     owner   => 'root',
     group   => 'root',
     mode    => '0444',
-    content => template('apache/vhost.conf.erb'),
+    content => $vhost_content_r,
+    source  => $vhost_source_r,
   }
 
   # Our user-editable config file
