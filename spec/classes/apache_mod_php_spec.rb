@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe( 'apache::mod::php', :type => :class ) do
-  let :pre_condition do
-    "class { 'apache': }"
-  end
-
   let :base_facts do
     {
       'concat_basedir' => '/spec/concat',

@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe( 'apache::mod::ssl', :type => :class ) do
-  let :pre_condition do
-    'class { "apache": }'
-  end
-
   let :default_facts do
     {
       :concat_basedir => '/spec/concat',
