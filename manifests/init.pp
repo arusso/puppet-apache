@@ -29,9 +29,6 @@
 #   File to store listen/namevirtualhost ports configuration in.
 #   Defaults to /etc/httpd/conf/ports.conf
 #
-# [*confd_dir*]
-#   Location of the conf.d directory. Defaults to /etc/httpd/conf.d
-#
 # [*config_file*]
 #   Location of main httpd.conf file. Defaults to /etc/httpd/conf/httpd.conf
 #
@@ -45,7 +42,6 @@ class apache(
   $service_ensure = 'running',
   $service_name = $::apache::params::service_name,
   $ports_file = $::apache::params::ports_file,
-  $confd_dir = $::apache::params::confd_dir,
   $config_file = $::apache::params::config_file,
   # TODO: combine httpd.conf.* into a single httpd.conf
   $config_template = $::apache::params::config_template,

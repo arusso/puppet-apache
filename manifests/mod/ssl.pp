@@ -3,11 +3,13 @@
 # Installs and enables the mod_ssl module
 #
 class apache::mod::ssl {
+  require ::apache::params
+
   ::apache::mod { 'ssl': }
 
   file { 'ssl.conf':
     ensure  => present,
-    path    => "${::apache::confd_dir}/ssl.conf",
+    path    => "${::apache::params::confd_dir}/ssl.conf",
     owner   => 'root',
     group   => 'root',
     mode    => '0444',
@@ -18,7 +20,7 @@ class apache::mod::ssl {
 
   file { 'module-ssl.conf':
     ensure => 'link',
-    path   => "${::apache::confd_dir}/module-ssl.conf",
-    target => "${::apache::confd_dir}/ssl.conf",
+    path   => "${::apache::params::confd_dir}/module-ssl.conf",
+    target => "${::apache::params::confd_dir}/ssl.conf",
   }
 }
