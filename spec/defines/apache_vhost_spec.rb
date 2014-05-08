@@ -95,4 +95,58 @@ describe( 'apache::vhost',:type => :define) do
       should contain_file('/etc/httpd/conf.d/vhost-www.example.com.include')
     end
   end
+
+  context 'default raw config' do
+    let(:title) { 'www.example.com' }
+    let(:facts) { redhat5_facts }
+    let :params do
+      {
+        'ssl' => true,
+        'ssl_crt_file' => '/tmp/cert.crt',
+        'ssl_key_file' => '/tmp/key.key',
+        'ssl_cert_resource' => 'noset',
+      }
+    end
+    it do
+      lines = [
+        /^SSL RAW CONFIG LINE 1$/,
+        /^SSL RAW CONFIG LINE 2$/,
+        /^RAW CONFIG LINE 1$/,
+        /^RAW CONFIG LINE 2$/,
+      ]
+
+      lines.each do |line|
+        should contain_file('/etc/httpd/conf.d/vhost-1-www.example.com.conf').
+          without({ :content => line })
+      end
+    end
+  end
+
+  context 'provide raw config' do
+    let(:title) { 'www.example.com' }
+    let(:facts) { redhat5_facts }
+    let :params do
+      {
+        'ssl' => true,
+        'ssl_raw' => "SSL RAW CONFIG LINE 1\nSSL RAW CONFIG LINE 2\n",
+        'raw' => "RAW CONFIG LINE 1\nRAW CONFIG LINE 2\n",
+        'ssl_crt_file' => '/tmp/cert.crt',
+        'ssl_key_file' => '/tmp/key.key',
+        'ssl_cert_resource' => 'noset',
+      }
+    end
+    it do
+      lines = [
+        /^SSL RAW CONFIG LINE 1$/,
+        /^SSL RAW CONFIG LINE 2$/,
+        /^RAW CONFIG LINE 1$/,
+        /^RAW CONFIG LINE 2$/,
+      ]
+
+      lines.each do |line|
+        should contain_file('/etc/httpd/conf.d/vhost-1-www.example.com.conf').
+          with({ :content => line })
+      end
+    end
+  end
 end
