@@ -14,6 +14,7 @@
 
   DocumentRoot <%= @document_root %>
 <% end -%>
+<% if @raw_config -%><%= @raw_config %><% end -%>
 <% if @provide_include -%>
 
   # Include a config that puppet wont override
@@ -40,6 +41,7 @@
 
   DocumentRoot <%= @document_root %>
 <% end -%>
+<% if @ssl_raw_config -%><%= @ssl_raw_config %><% end -%>
 <% if @provide_include -%>
 
   # Include a config that puppet wont override

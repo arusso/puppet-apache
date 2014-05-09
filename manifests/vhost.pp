@@ -31,6 +31,9 @@
 #   Provide .include files that can be used in conjunction with sudoer rules
 #   that we wont override (only place if they dont exist). Default is true.
 #
+# [*raw*]
+#   (string) arbitrary config directives to be placed in the non-ssl vhost
+#
 # [*server_alias*]
 #   Comma seperated or array value of the hostnames that this this virtual host
 #   respond to.
@@ -85,6 +88,10 @@
 # [*ssl_port*]
 #   TCP port to listen on for HTTPS traffic. Default to 443.
 #
+# [*ssl_raw(]
+#   (string) Arbitrary config data that can be inserted into the ssl
+#   virtualhost
+#
 # [*vhost_conf_source*]
 #   Specify the puppet filepath to a static vhost configuration file. Note that
 #   if vhost_conf_template is set, this will have no effect.
@@ -112,11 +119,13 @@ define apache::vhost (
   $port = '80',
   $document_root = $apache::params::document_root,
   $provide_include = 'UNSET',
+  $raw = 'UNSET',
   $server_alias = undef,
   $server_name = $name,
   $ssl = false,
   $ssl_ip = '*',
   $ssl_port = '443',
+  $ssl_raw = 'UNSET',
   $ssl_cert_resource = $apache::params::ssl_cert_resource,
   $ssl_crt_file = undef,
   $ssl_key_file = undef,
@@ -154,6 +163,13 @@ define apache::vhost (
   validate_bool( $ssl_real )
 
   $ord = $is_default ? { true => '0', default => '1' }
+
+  $raw_config = $raw ? {
+    'UNSET' => undef,
+    default => $raw,
+  }
+  if $raw { validate_string($raw_config) }
+
   if $ssl_real {
     ensure_resource('apache::listen', "${ssl_ip}:${ssl_port}")
     ensure_resource('apache::namevirtualhost', "${ssl_ip}:${ssl_port}")
@@ -178,6 +194,12 @@ define apache::vhost (
     # be able to disable the intermediate file.  So if it's empty, lets not
     # worry about if thats the case
     if ! $ssl_int_file == undef { validate_absolute_path( $ssl_int_file ) }
+
+    $ssl_raw_config = $ssl_raw ? {
+      'UNSET' => undef,
+      default => $ssl_raw,
+    }
+    if $ssl_raw { validate_string($ssl_raw_config) }
 
     # Our user-editable config file
     if $provide_include_r {
