@@ -34,4 +34,11 @@ class apache::service(
     name    => $service_name,
     enable  => $enable_r,
   }
+
+  if $ensure_r {
+    # make sure we subscribe to the vhosts
+    Apache::Vhost<| |> ~> Service[httpd]
+    File['/etc/httpd/conf/ports.conf'] ~> Service[httpd]
+    File['/etc/httpd/conf/httpd.conf'] ~> Service[httpd]
+  }
 }
