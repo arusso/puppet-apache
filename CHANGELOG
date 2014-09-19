@@ -1,3 +1,7 @@
+2014-09-19 Aaron Russo <arusso@berkeley.edu> - 0.1.4
+* fix resource uniqueness error that occurs when multiple vhosts use the same
+  server_name parameter
+
 2014-05-06 Aaron Russo <arusso@berkeley.edu> - 0.1.3
 * fix issue where vhost config changes would not trigger service restart when it
   should
