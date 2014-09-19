@@ -149,4 +149,21 @@ describe( 'apache::vhost',:type => :define) do
       end
     end
   end
+
+  context 'apache file naming' do
+    let(:title) { 'www.example.com' }
+    let(:facts) { redhat5_facts }
+    let :params do
+      {
+        'ssl' => true,
+        'ssl_crt_file' => '/tmp/cert.crt',
+        'ssl_key_file' => '/tmp/key.key',
+        'ssl_cert_resource' => 'noset',
+        'server_name' => 'www2.example.com',
+      }
+    end
+    it do
+      should contain_file('/etc/httpd/conf.d/vhost-1-www.example.com.conf')
+    end
+  end
 end

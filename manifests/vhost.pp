@@ -17,7 +17,7 @@
 # [*is_default*]
 #   Distinguishes the vhost as the default one, naming the configuration file
 #   appropriately such that it will come before non-default vhosts. Multiple
-#   vhosts with is_default set will resort to sorting by $server_name.
+#   vhosts with is_default set will resort to sorting by $name.
 #
 #  Usage:
 #    is_default = true
@@ -185,7 +185,7 @@ define apache::vhost (
     if $ssl_cert_resource_r {
       validate_string( $ssl_cert_resource_r )
       Ssl::Cert[$ssl_cert_resource_r]->
-      File["${apache::params::vhost_dir}/vhost-${ord}-${server_name}.conf"]
+      File["${apache::params::vhost_dir}/vhost-${ord}-${name}.conf"]
     }
 
     validate_absolute_path( $ssl_key_file )
@@ -203,7 +203,7 @@ define apache::vhost (
 
     # Our user-editable config file
     if $provide_include_r {
-      file { "${apache::params::vhost_dir}/vhost-${server_name}.ssl.include":
+      file { "${apache::params::vhost_dir}/vhost-${name}.ssl.include":
         ensure  => 'file',
         owner   => 'root',
         group   => 'root',
@@ -228,7 +228,7 @@ define apache::vhost (
     $vhost_source_r = undef
     $vhost_content_r = template('apache/vhost.conf.erb')
   }
-  file { "${apache::params::vhost_dir}/vhost-${ord}-${server_name}.conf":
+  file { "${apache::params::vhost_dir}/vhost-${ord}-${name}.conf":
     ensure  => 'file',
     owner   => 'root',
     group   => 'root',
@@ -239,7 +239,7 @@ define apache::vhost (
 
   # Our user-editable config file
   if $provide_include_r {
-    file { "${apache::params::vhost_dir}/vhost-${server_name}.include":
+    file { "${apache::params::vhost_dir}/vhost-${name}.include":
       owner   => 'root',
       group   => 'root',
       mode    => '0644',
